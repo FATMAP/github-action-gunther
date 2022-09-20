@@ -17,7 +17,7 @@ inputs:
 outputs:
     stdout:
         description: "Output from command"
-        value: ${{ steps.random-number-generator.outputs.random-number }}
+        value: ${{ steps.run_script.outputs.stdout }}
 
 runs:
     using: "composite"
@@ -32,7 +32,8 @@ runs:
             curl -L -H "Accept: application/octet-stream" -H "Authorization: Bearer $GH_TOKEN" ${{ steps.fetch_url.outputs.url }} --output ./release_manager.mjs
           shell: bash
         - name: "Run script"
+          id: run_script
           run: |
             chmod +x ./release_manager.mjs
-            echo "::set-output name=result::$(npx zx release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }})"
+            echo "::set-output name=stdout::$(npx zx release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }})"
           shell: bash

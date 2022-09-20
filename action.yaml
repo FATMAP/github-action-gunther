@@ -29,7 +29,7 @@ runs:
           shell: bash
         - name: "Download script"
           run: |
-            curl {{ steps.fetch_url.url }} --output release_manager.mjs
+            curl ${{ steps.fetch_url.outputs.url }} --output release_manager.mjs
           shell: bash
         - name: "Run script"
           run: |

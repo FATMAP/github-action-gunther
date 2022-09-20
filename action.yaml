@@ -25,7 +25,7 @@ runs:
         - name: "Fetch asset url"
           id: fetch_url
           run: |
-            echo "::set-output name=url::$(gh api -H "Accept: application/vnd.github+json" /repos/FATMAP/gunther/releases/${{ steps.inputs.version }} | jq -r '.assets[] |  select(.name == "release_manager.mjs") | .browser_download_url')"
+            echo "::set-output name=url::$(gh api -H "Accept: application/vnd.github+json" /repos/FATMAP/gunther/releases/${{ inputs.version }} | jq -r '.assets[] |  select(.name == "release_manager.mjs") | .browser_download_url')"
           shell: bash
         - name: "Download script"
           run: |
@@ -33,5 +33,5 @@ runs:
           shell: bash
         - name: "Run script"
           run: |
-            echo "::set-output name=stdout::$(./release_manager.mjs ${{ steps.inputs.command }} ${{ steps.inputs.arguments }})"
+            echo "::set-output name=stdout::$(./release_manager.mjs ${{ steps.inputs.command }} ${{ inputs.arguments }})"
           shell: bash

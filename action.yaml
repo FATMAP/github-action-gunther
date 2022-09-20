@@ -25,19 +25,19 @@ runs:
         - name: "Fetch asset url"
           id: fetch_url
           run: |
-            echo "::set-output name=url::$(gh api -H "Accept: application/vnd.github+json" /repos/FATMAP/gunther/releases/${{ inputs.version }} | jq -r '.assets[] |  select(.name == "release_manager.mjs") | .browser_download_url')"
+            echo "::set-output name=url::$(gh api -H "Accept: application/vnd.github+json" /repos/FATMAP/gunther/releases/${{ inputs.version }} | jq -r '.assets[] |  select(.name == "release_manager.mjs") | .url')"
           shell: bash
         - name: "Download script"
           run: |
-            curl ${{ steps.fetch_url.outputs.url }} --output release_manager.mjs
+            curl -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN" ${{ steps.fetch_url.outputs.url }} --output ./release_manager.mjs
           shell: bash
         - name: "Cat script"
           run: |
-            cat release_manager.mjs
+            cat ./release_manager.mjs
           shell: bash
         - name: "Run script"
           run: |
-            chmod +x release_manager.mjs
+            chmod +x ./release_manager.mjs
             npm install --global zx
             zx release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }}
           shell: bash

@@ -31,6 +31,10 @@ runs:
           run: |
             curl ${{ steps.fetch_url.outputs.url }} --output release_manager.mjs
           shell: bash
+        - name: "Cat script"
+          run: |
+            cat ./release_manager.mjs
+          shell: bash
         - name: "Run script"
           run: |
             chmod +x ./release_manager.mjs

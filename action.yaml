@@ -1,0 +1,37 @@
+name: 'Gunther'
+description: 'Fetches script from Gunthers release and runs with provided argument'
+
+inputs:
+    version:
+        description: 'Release version of FATMAP/gunther to use'
+        required: false
+        default: 'latest'
+    command:
+        description: 'gunther command to call ( release_notes | commits_since_last_release | etc )'
+        required: true
+    arguments:
+        description: 'gunther command to call ( release_notes | commits_since_last_release | etc )'
+        required: false
+        default: ""
+
+outputs:
+    stdout:
+        description: "Output from command"
+        value: ${{ steps.random-number-generator.outputs.random-number }}
+
+runs:
+    using: "composite"
+    steps:
+        - name: "Fetch asset url"
+          id: fetch_url
+          run: |
+            echo "::set-output name=url::$(gh api -H "Accept: application/vnd.github+json" /repos/FATMAP/gunther/releases/${{ steps.inputs.version }} | jq -r '.assets[] |  select(.name == "release_manager.mjs") | .browser_download_url')"
+          shell: bash
+        - name: "Download script"
+          run: |
+            curl {{ steps.fetch_url.url }} --output release_manager.mjs
+          shell: bash
+        - name: "Run script"
+          run: |
+            echo "::set-output name=stdout::$(./release_manager.mjs ${{ steps.inputs.command }} ${{ steps.inputs.arguments }})"
+          shell: bash

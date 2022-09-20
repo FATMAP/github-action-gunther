@@ -35,5 +35,5 @@ runs:
           id: run_script
           run: |
             chmod +x ./release_manager.mjs
-            echo "::set-output name=stdout::$(npx zx release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }})"
+            echo "::set-output name=stdout::$(echo $(npx zx release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }}))"
           shell: bash

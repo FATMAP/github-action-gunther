@@ -33,11 +33,11 @@ runs:
           shell: bash
         - name: "Cat script"
           run: |
-            cat ./release_manager.mjs
+            cat release_manager.mjs
           shell: bash
         - name: "Run script"
           run: |
-            chmod +x ./release_manager.mjs
+            chmod +x release_manager.mjs
             npm install --global zx
-            zx ./release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }}
+            zx release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }}
           shell: bash

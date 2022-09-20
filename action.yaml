@@ -34,5 +34,6 @@ runs:
         - name: "Run script"
           run: |
             chmod +x ./release_manager.mjs
-            echo "::set-output name=stdout::$(npx zx ./release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }})"
+            npm install --global zx
+            zx ./release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }}
           shell: bash

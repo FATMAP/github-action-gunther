@@ -34,5 +34,5 @@ runs:
         - name: "Run script"
           run: |
             chmod +x ./release_manager.mjs
-            echo "::set-output name=stdout::$(./release_manager.mjs ${{ steps.inputs.command }} ${{ inputs.arguments }})"
+            echo "::set-output name=stdout::$(./release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }})"
           shell: bash

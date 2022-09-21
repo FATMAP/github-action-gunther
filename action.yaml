@@ -2,38 +2,40 @@ name: 'Gunther'
 description: 'Fetches script from Gunthers release and runs with provided argument'
 
 inputs:
-    version:
-        description: 'Release version of FATMAP/gunther to use'
-        required: false
-        default: 'latest'
-    command:
-        description: 'gunther command to call ( release_notes | commits_since_last_release | etc )'
-        required: true
-    arguments:
-        description: 'gunther command to call ( release_notes | commits_since_last_release | etc )'
-        required: false
-        default: ""
+  version:
+    description: 'Release version of FATMAP/gunther to use'
+    required: false
+    default: 'latest'
+  command:
+    description: 'gunther command to call ( release_notes | commits_since_last_release | etc )'
+    required: true
+  arguments:
+    description: 'gunther command to call ( release_notes | commits_since_last_release | etc )'
+    required: false
+    default: ""
 
 outputs:
-    stdout:
-        description: "Output from command"
-        value: ${{ steps.run_script.outputs.stdout }}
+  stdout:
+    description: "Output from command"
+    value: ${{ steps.run_script.outputs.stdout }}
 
 runs:
-    using: "composite"
-    steps:
-        - name: "Fetch asset url"
-          id: fetch_url
-          run: |
-            echo "::set-output name=url::$(gh api -H "Accept: application/vnd.github+json" /repos/FATMAP/gunther/releases/${{ inputs.version }} | jq -r '.assets[] |  select(.name == "release_manager.mjs") | .url')"
-          shell: bash
-        - name: "Download script"
-          run: |
-            curl -L -H "Accept: application/octet-stream" -H "Authorization: Bearer $GH_TOKEN" ${{ steps.fetch_url.outputs.url }} --output ./release_manager.mjs
-          shell: bash
-        - name: "Run script"
-          id: run_script
-          run: |
-            chmod +x ./release_manager.mjs
-            echo "::set-output name=stdout::$(echo $(npx zx release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }}))"
-          shell: bash
+  using: "composite"
+  steps:
+    - name: "Fetch asset url"
+      id: fetch_url
+      run: |
+        echo "::set-output name=url::$(gh api -H "Accept: application/vnd.github+json" /repos/FATMAP/gunther/releases/${{ inputs.version }} | jq -r '.assets[] |  select(.name == "release_manager.mjs") | .url')"
+      shell: bash
+    - name: "Download script"
+      run: |
+        curl -L -H "Accept: application/octet-stream" -H "Authorization: Bearer $GH_TOKEN" ${{ steps.fetch_url.outputs.url }} --output ./release_manager.mjs
+      shell: bash
+    - name: "Run script"
+      id: run_script
+      run: |
+        chmod +x ./release_manager.mjs
+        export result=$(npx zx release_manager.mjs ${{ inputs.command }} ${{ inputs.arguments }})
+        echo result=$result
+        echo "::set-output name=stdout::$(echo $result)"
+      shell: bash
